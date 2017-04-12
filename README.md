@@ -37,7 +37,15 @@
    * Works on Linux, Mac OSX, Windows, BSD
 
 ## Installation
-   Todo
+   
+   ```
+   $ git clone https://github.com/Rafael-Cheng/ProxyYourSpider.git
+   ```
+   or just download zip.
+   ```
+   $ cd ProxyYourSpider
+   $ pip install -r requirements.txt
+   ```
 
 ## License
    The license of this project is GPL license.
