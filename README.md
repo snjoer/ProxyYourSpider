@@ -7,6 +7,13 @@
 ## Introduction
    Getting banned by websites can be really annoying. Given that the free proxy ips available on the Interent are generally hard to use. This project aims to provide a library with which spider programmers can easily fake the ip of their spider.
 
+## Features
+   proxyYourSpider collets proxies from http://proxydb.net/?protocol=http&protocol=https&anonlvl=4. The number of proxies colleted will be determined by the argument user input when launching run.py. All the proxies which are non-anonymous or have a timeout more than 2 seconds will be kicked out.
+
+   run.py keeps alive and updates the proxy pool when the available proxies are less than the given threshold which dramatically enhances the stability of proxy pool.
+
+   To get a proxy, just call method fetchProxy and provide a proxy type and you will get a decent proxy which has been verified before sending to you:)
+
 ## Usage
    Generally, you only need to call fetchProxy method to fet a proxyyou desire.
    ![](https://github.com/Rafael-Cheng/ProxyYourSpider/blob/master/usage.gif)
