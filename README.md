@@ -14,13 +14,20 @@
    However, you should bear in mind that run.py should be executed first and keep alive while using ProxyYourSpider.
 
    Just execute run.py like:
-   `python run.py 20`
+   
+   ```python run.py 20```
+   
    here 20 is the number of proxies you need.
+   
    ![](https://github.com/Rafael-Cheng/ProxyYourSpider/blob/master/run_launch.png)
 
    Another thing worth mention is that run.py should be KEEP ALIVE while using ProxyYourSpide. It will continuously check whether the available proxies in your proxies pool is sufficient.
+   
+   ![](https://github.com/Rafael-Cheng/ProxyYourSpider/blob/master/run_update.png)
 
    Notice: You also need to keep Redis alive since it is our database on which we store our proxies.
+    
+   ![](https://github.com/Rafael-Cheng/ProxyYourSpider/blob/master/redis.png)
 
 ## Requirements
    * Python 2.7
