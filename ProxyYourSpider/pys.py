@@ -1,24 +1,32 @@
 # -*- encoding:utf-8 -*-
 
+import time
 import redis
 import requests
+import threading
 from bs4 import BeautifulSoup
-from requests.exceptions import SSLError, Timeout, ProxyError
+from fake_useragent import UserAgent
+
+offset = 0
 
 class Proxy(object):
-    def __init__(self, size):
-        self.size = size
-        self.url = "http://proxydb.net/?protocol=http&protocol=https&anonlvl=4"
-        self.http_test_url = 'http://httpbin.org/ip'
-        self.https_test_url = 'https://httpbin.org/ip'
+    llen = 0
+    size = 0
+    url = "http://proxydb.net/?protocol=http&protocol=https&anonlvl=4" 
+    http_test_url = 'http://httpbin.org/ip'
+    https_test_url = 'https://httpbin.org/ip'
+
+    def __init__(self):
         self.r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-    def initProxiesPool(self):
-        offset = 0
-        llen = 0
-        while llen < self.size:
+    def fillProxyPool(self):
+        global offset
+        while self.llen < self.size:
             url = self.url + '&offset=' + str(offset)
-            response = requests.get(self.url)
+            offset += 50
+            ua = UserAgent()
+            headers = {'User-Agent' : ua.random}
+            response = requests.get(url, headers=headers)
             soup = BeautifulSoup(response.text, 'lxml')
             lists = soup.find('tbody').find_all('tr')
             for ls in lists:
@@ -26,47 +34,63 @@ class Proxy(object):
                 proxy = ''.join(tds[0].text.split())
                 _type = ''.join(tds[1].text.split()).lower()
                 validity = self.checkValidity(_type, proxy)
-                print 'check ' + proxy
                 if validity == True:
-                    print proxy + ' is valid'
                     self.r.lpush(_type, proxy)
-                else:
-                    print proxy + ' is invalid'
-            llen += self.r.llen('http') + self.r.llen('https')
-            offset += 50
+                    print '1 proxy added: %s. http: %d; https: %s.' \
+                            %(proxy, self.r.llen('http'), self.r.llen('https'))
+            self.__class__.llen += self.r.llen('http') + self.r.llen('https')
 
     def checkValidity(self, _type, proxy):
         proxyDict = {_type : _type + '://' + proxy}
+        ua = UserAgent()
+        headers = {'User-Agent' : ua.random}
         try:
             if _type == 'http':
                 r = requests.get(self.http_test_url, proxies=proxyDict,\
-                        timeout=2)
+                        headers=headers, timeout=2)
             else:
                 r = requests.get(self.https_test_url, proxies=proxyDict,\
-                        timeout=2)
-        except SSLError:
-            return False
-        except Timeout:
-            return False
-        except ProxyError:
+                        headers=headers, timeout=2)
+        except Exception:
             return False
         soup = BeautifulSoup(r.text, 'lxml')
-        retDict = eval(soup.find('body').text)
+        try:
+            retDict = eval(soup.find('body').text)
+        except Exception:
+            return False
         if proxy.split(':')[0] == retDict['origin']:
             return True
     
+    def createProxyPool(self, size):
+        self.__class__.size = size
+        t1 = threading.Thread(target=self.fillProxyPool)
+        t2 = threading.Thread(target=self.fillProxyPool)
+        t3 = threading.Thread(target=self.fillProxyPool)
+        t4 = threading.Thread(target=self.fillProxyPool)
+        t1.start()
+        time.sleep(1)
+        t2.start()
+        time.sleep(1)
+        t3.start()
+        time.sleep(1)
+        t4.start()
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
+        return (self.r.llen('http'), self.r.llen('https'))
+
     def fetchProxy(self, _type):
         while True:
-            if self.r.llen(_type) > 0:
-                proxy = self.r.lpop(_type)
-                validity = self.checkValidity(_type, proxy)
-                if validity == True:
-                    self.r.rpush(_type, proxy)
-                    break
-            else:
-                self.initProxiesPool()
+            proxy = self.r.lpop(_type)
+            validity = self.checkValidity(_type, proxy)
+            if validity == True:
+                self.r.rpush(_type, proxy)
+                break
         return (_type, proxy)
-
-if __name__ == '__main__':
-    proxy = Proxy(20)
-    (_type, iport) = proxy.fetchProxy('http')
+    
+    def autoUpdate(self):
+        while True:
+            self.fillProxyPool()
+            time.sleep(10)
+            print "update..."
