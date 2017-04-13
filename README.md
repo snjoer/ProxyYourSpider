@@ -15,7 +15,7 @@
    To get a proxy, just call method fetchProxy and provide a proxy type and you will get a decent proxy which has been verified before sending to you:)
 
 ## Usage
-   Generally, you only need to call fetchProxy method to fet a proxyyou desire.
+   Generally, you only need to call fetchProxy method to fet a proxy you desire.
    ![](https://github.com/Rafael-Cheng/ProxyYourSpider/blob/master/usage.gif)
 
    However, you should bear in mind that run.py should be executed first and keep alive while using ProxyYourSpider.
