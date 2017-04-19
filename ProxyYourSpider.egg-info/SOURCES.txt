@@ -1,0 +1,10 @@
+README.rst
+setup.py
+ProxyYourSpider/__init__.py
+ProxyYourSpider/pys.py
+ProxyYourSpider/run.py
+ProxyYourSpider.egg-info/PKG-INFO
+ProxyYourSpider.egg-info/SOURCES.txt
+ProxyYourSpider.egg-info/dependency_links.txt
+ProxyYourSpider.egg-info/top_level.txt
+ProxyYourSpider.egg-info/zip-safe
