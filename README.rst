@@ -35,7 +35,8 @@ However, you should bear in mind that run.py should be executed first and keep a
 Just execute run.py like:
 
 .. code-block:: bash 
-    python run.py 20
+
+  $ python run.py 20
 
 here 20 is the number of proxies you need.
    
@@ -62,15 +63,16 @@ Installation
 ------------   
    
 .. code-block:: bash
-    $ git clone https://github.com/Rafael-Cheng/ProxyYourSpider.git
+  
+  $ git clone https://github.com/Rafael-Cheng/ProxyYourSpider.git
 
 or just download zip.
 
 .. code-block:: bash
-    $ cd ProxyYourSpider
-    $ pip install -r requirements.txt
+  
+  $ pip install ProxyYourSpider
 
 License
 -------
 
-    The license of this project is GPL license.
+The license of this project is GPL license.
